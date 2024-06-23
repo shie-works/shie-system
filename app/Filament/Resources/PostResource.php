@@ -29,25 +29,40 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                Components\TextInput::make('title')->label('タイトル')->required()
-                    ->columnSpan(1),
-                Components\Select::make('post_category_id')
-                    ->relationship('postCategory', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->createOptionForm([
-                        Components\TextInput::make('name')
-                            ->label('カテゴリ名')
-                            ->required(),
-                        Components\TextInput::make('order')->label('並び順')->numeric()->required(),
+                Components\Section::make('メイン')
+                    ->schema([
+                        Components\TextInput::make('title')->label('タイトル')->required(),
+                        // ->columnSpan(2),
+                        Components\MarkdownEditor::make('description')->label('概要')->required(),
+                        // ->columnSpan(2),
                     ])
-                    ->columnSpan(1),
-                Components\MarkdownEditor::make('description')->label('概要')->required()
+                    ->columnSpan(4),
+                Components\Section::make('')
+                    ->schema([
+                        Components\Select::make('post_category_id')
+                            ->relationship('postCategory', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->createOptionForm([
+                                Components\TextInput::make('name')
+                                    ->label('カテゴリ名')
+                                    ->required(),
+                                Components\TextInput::make('order')->label('並び順')->numeric()->required(),
+                            ]),
+                        // ->columnSpan(1),
+                        Components\Checkbox::make('release_flag')->label('公開済み'),
+                        // ->columnSpan(1),
+                        Components\FileUpload::make('main_image')->label('メインイメージ')
+                        ->image()
+                        ->imageEditor()
+                        ->downloadable()
+                    ])
                     ->columnSpan(2),
+
                 // Components\TextInput::make('order')->label('並び順')->numeric()->required(),
-            ]);
-        // ->columns(1);
+            ])
+            ->columns(6);
     }
 
     public static function table(Table $table): Table
